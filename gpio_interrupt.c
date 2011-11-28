@@ -67,6 +67,7 @@ static void hello_exit(void)
 {
     disable_irq(irq);
     free_irq(irq, NULL);
+    gpio_free(OMAP3_GPIO138);
     printk(KERN_INFO "Goodbye, Tom Xue! From inside kernel driver!\n");
 }
 
