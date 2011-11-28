@@ -20,7 +20,7 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 
-#include <linux/interrupt.h>  
+#include <linux/interrupt.h> //request_irq 
 #include <linux/gpio.h>	//OMAP_GPIO_IRQ
 #include <plat/mux.h>	//omap_cfg_reg
 #include <linux/irq.h>	//IRQ_TYPE_LEVEL_LOW
@@ -36,19 +36,23 @@ static irqreturn_t my_interrupt(){
 
 static int hello_init(void) {
 	int ret;
-	/*
-	omap_cfg_reg(OMAP3_GPIO138);
+
+	//below function: Sets the Omap MUX and PULL_DWN registers based on the table and judge 'cpu_class_is_omap1'
+	//omap_cfg_reg(OMAP3_GPIO138);
+		
 	ret = gpio_request(OMAP3_GPIO138, "OMAP3_GPIO138");
 	if(ret < 0)
 		printk(KERN_ALERT "gpio_request failed!\n");
 		
-	gpio_direction_input(OMAP3_GPIO138);
-	*/
+	gpio_direction_input(OMAP3_GPIO138);	
+	
 	int irq = OMAP_GPIO_IRQ(OMAP3_GPIO138);	//irq33 <-> GPIO module 5: includes gpio_138
-	irq_set_irq_type(irq, IRQ_TYPE_LEVEL_LOW);
+	printk(KERN_ALERT "OMAP_GPIO_IRQ success! The irq = %d\n", irq);
+	
+	irq_set_irq_type(irq, IRQ_TYPE_EDGE_FALLING);
 	enable_irq(gpio_to_irq(OMAP3_GPIO138));
 	
-	ret = request_irq(irq, my_interrupt, IRQF_DISABLED, "my_interrupt", NULL);
+	ret = request_irq(irq, my_interrupt, IRQF_DISABLED, "my_interrupt_proc", NULL);
 	if (ret==0)
         printk(KERN_ALERT "request_irq success!\n");
     else
