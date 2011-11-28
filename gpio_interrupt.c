@@ -29,6 +29,7 @@ MODULE_LICENSE("GPL");
 
 //MMC2_DAT6, P9-pin5, system default GPIO input with pullup
 #define OMAP3_GPIO138          (138)
+int irq;
 
 static irqreturn_t my_interrupt(){
 	printk(KERN_ALERT "my_interrupt executed!\n");
@@ -46,7 +47,7 @@ static int hello_init(void) {
 		
 	gpio_direction_input(OMAP3_GPIO138);	
 	
-	int irq = OMAP_GPIO_IRQ(OMAP3_GPIO138);	//irq33 <-> GPIO module 5: includes gpio_138
+	irq = OMAP_GPIO_IRQ(OMAP3_GPIO138);	//irq33 <-> GPIO module 5: includes gpio_138
 	printk(KERN_ALERT "OMAP_GPIO_IRQ success! The irq = %d\n", irq);
 	
 	irq_set_irq_type(irq, IRQ_TYPE_EDGE_FALLING);
@@ -64,6 +65,8 @@ static int hello_init(void) {
 
 static void hello_exit(void)
 {
+    disable_irq(irq);
+    free_irq(irq, NULL);
     printk(KERN_INFO "Goodbye, Tom Xue! From inside kernel driver!\n");
 }
 
