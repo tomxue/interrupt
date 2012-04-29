@@ -5,3 +5,6 @@ all: gpio_interrupt.c
 
 clean:
 	rm *.ko *.o Module.symvers *.mod.*
+
+TODO
+    solve the bug: irq type is set to be falling edge triggered but low level triggered indeed
